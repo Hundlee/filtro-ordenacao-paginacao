@@ -1,3 +1,6 @@
+"use client";
+
+import { useEffect, useState } from "react";
 import FilterDropdown from "./_components/filter-dropdown";
 import OrdersTable from "./_components/orders-table";
 import Pagination from "./_components/pagination";
@@ -11,21 +14,28 @@ import {
 } from "./_components/ui/card";
 import axios from "axios";
 
-export default async function Home({
+export default function Home({
     searchParams,
 }: {
     searchParams?: { search?: string };
 }) {
-    const fetchData = await axios.get(
-        "https://apis.codante.io/api/orders-api/orders",
-        {
-            params: {
-                search: searchParams?.search,
-            },
-        }
-    );
+    const [orders, setOrders] = useState([]);
 
-    const orders = fetchData.data.data;
+    useEffect(() => {
+        const fetchData = async () => {
+            const response = await axios.get(
+                "https://apis.codante.io/api/orders-api/orders",
+                {
+                    params: {
+                        search: searchParams?.search,
+                    },
+                }
+            );
+            setOrders(response.data.data);
+        };
+
+        fetchData();
+    }, [searchParams]);
 
     return (
         <main className="container px-1 py-10 md:p-10">

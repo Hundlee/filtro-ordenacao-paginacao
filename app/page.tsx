@@ -14,11 +14,11 @@ import {
 } from "./_components/ui/card";
 import axios from "axios";
 
-export default function Home({
-    searchParams,
-}: {
-    searchParams?: { search?: string };
-}) {
+type ComponentProps = {
+    searchParams?: { search?: string; status?: string };
+};
+
+export default function Home({ searchParams }: ComponentProps) {
     const [orders, setOrders] = useState([]);
 
     useEffect(() => {
@@ -28,6 +28,7 @@ export default function Home({
                 {
                     params: {
                         search: searchParams?.search,
+                        status: searchParams?.status,
                     },
                 }
             );

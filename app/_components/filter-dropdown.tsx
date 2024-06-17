@@ -21,7 +21,7 @@ export default function FilterDropdown() {
     const pathname = usePathname();
     const { replace } = useRouter();
 
-    const handleChangeFilter = (value: "" | "peding" | "completed") => {
+    const handleChangeFilter = (value: string) => {
         const params = new URLSearchParams(searchParams);
         setFilterStatus(value);
 
@@ -32,6 +32,7 @@ export default function FilterDropdown() {
         }
 
         replace(`${pathname}?${params.toString()}`);
+        setFilterStatus(value);
     };
     return (
         <DropdownMenu>

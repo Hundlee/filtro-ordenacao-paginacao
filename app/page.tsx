@@ -15,7 +15,7 @@ import {
 import axios from "axios";
 
 type ComponentProps = {
-    searchParams?: { search?: string; status?: string };
+    searchParams?: { search?: string; status?: string; sort?: string };
 };
 
 export default function Home({ searchParams }: ComponentProps) {
@@ -29,6 +29,7 @@ export default function Home({ searchParams }: ComponentProps) {
                     params: {
                         search: searchParams?.search,
                         status: searchParams?.status,
+                        sort: searchParams?.sort,
                     },
                 }
             );

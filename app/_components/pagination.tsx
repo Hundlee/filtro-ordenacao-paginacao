@@ -1,3 +1,5 @@
+"use client";
+
 import {
     Pagination as PaginationComponent,
     PaginationContent,
@@ -7,37 +9,63 @@ import {
     PaginationNext,
     PaginationPrevious,
 } from "@/app/_components/ui/pagination";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 
-export default function Pagination() {
+interface PaginationProps {
+    links: {
+        url: string;
+        label: string;
+        active: boolean;
+    }[];
+}
+
+export default function Pagination({ links }: PaginationProps) {
+    const searchParams = useSearchParams();
+    const pathname = usePathname();
+    const { replace } = useRouter();
+
+    function handleClickPage(key: number) {
+        const params = new URLSearchParams(searchParams);
+
+        if (key > 1) {
+            params.set("page", key.toString());
+        } else {
+            params.delete("page");
+        }
+        replace(`${pathname}?${params.toString()}`);
+    }
+
     return (
         <PaginationComponent>
             <PaginationContent>
                 <PaginationItem>
-                    <PaginationPrevious />
+                    <PaginationPrevious className="cursor-pointer" />
                 </PaginationItem>
-                <PaginationItem className="hidden md:inline-flex">
-                    <PaginationLink isActive={true}>1</PaginationLink>
-                </PaginationItem>
-                <PaginationItem className="hidden md:inline-flex">
-                    <PaginationLink>2</PaginationLink>
-                </PaginationItem>
-                <PaginationItem className="hidden md:inline-flex">
-                    <PaginationLink>3</PaginationLink>
-                </PaginationItem>
-                <PaginationItem className="hidden md:inline-flex">
-                    <PaginationEllipsis />
-                </PaginationItem>
-                <PaginationItem className="hidden md:inline-flex">
-                    <PaginationLink>8</PaginationLink>
-                </PaginationItem>
-                <PaginationItem className="hidden md:inline-flex">
-                    <PaginationLink>9</PaginationLink>
-                </PaginationItem>
-                <PaginationItem className="hidden md:inline-flex">
-                    <PaginationLink>10</PaginationLink>
-                </PaginationItem>
+
+                {links.map((link) => {
+                    if (
+                        link.label.includes("Anterior") ||
+                        link.label.includes("Próximo")
+                    ) {
+                        return null;
+                    }
+
+                    return (
+                        <PaginationItem key={link.url}>
+                            <PaginationLink
+                                onClick={() =>
+                                    handleClickPage(Number(link.label))
+                                }
+                                isActive={link.active}
+                                dangerouslySetInnerHTML={{ __html: link.label }}
+                                className="md:inline-flex hidden cursor-pointer"
+                            ></PaginationLink>
+                        </PaginationItem>
+                    );
+                })}
+
                 <PaginationItem>
-                    <PaginationNext />
+                    <PaginationNext className="cursor-pointer" />
                 </PaginationItem>
             </PaginationContent>
         </PaginationComponent>

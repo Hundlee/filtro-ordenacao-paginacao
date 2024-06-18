@@ -1,5 +1,3 @@
-"use client";
-
 import { useEffect, useState } from "react";
 import FilterDropdown from "./_components/filter-dropdown";
 import OrdersTable from "./_components/orders-table";
@@ -23,29 +21,24 @@ type ComponentProps = {
     };
 };
 
-export default function Home({ searchParams }: ComponentProps) {
-    const [orders, setOrders] = useState([]);
-    const [links, setLinks] = useState([]);
+export default async function Home({ searchParams }: ComponentProps) {
+    const response = await axios.get(
+        "https://apis.codante.io/api/orders-api/orders",
+        {
+            params: {
+                search: searchParams?.search,
+                status: searchParams?.status,
+                sort: searchParams?.sort,
+                page: searchParams?.page,
+            },
+        }
+    );
 
-    useEffect(() => {
-        const fetchData = async () => {
-            const response = await axios.get(
-                "https://apis.codante.io/api/orders-api/orders",
-                {
-                    params: {
-                        search: searchParams?.search,
-                        status: searchParams?.status,
-                        sort: searchParams?.sort,
-                        page: searchParams?.page,
-                    },
-                }
-            );
-            setOrders(response.data.data);
-            setLinks(response.data.meta.links);
-        };
+    const orders = response.data.data;
 
-        fetchData();
-    }, [searchParams]);
+    let links: { url: string; label: string; active: boolean }[] =
+        response.data.meta.links;
+    links = links.map((link, index) => ({ ...link, id: index }));
 
     return (
         <main className="container px-1 py-10 md:p-10">

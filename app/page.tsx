@@ -15,11 +15,17 @@ import {
 import axios from "axios";
 
 type ComponentProps = {
-    searchParams?: { search?: string; status?: string; sort?: string };
+    searchParams?: {
+        search?: string;
+        status?: string;
+        sort?: string;
+        page?: number;
+    };
 };
 
 export default function Home({ searchParams }: ComponentProps) {
     const [orders, setOrders] = useState([]);
+    const [links, setLinks] = useState([]);
 
     useEffect(() => {
         const fetchData = async () => {
@@ -30,10 +36,12 @@ export default function Home({ searchParams }: ComponentProps) {
                         search: searchParams?.search,
                         status: searchParams?.status,
                         sort: searchParams?.sort,
+                        page: searchParams?.page,
                     },
                 }
             );
             setOrders(response.data.data);
+            setLinks(response.data.meta.links);
         };
 
         fetchData();
@@ -55,7 +63,7 @@ export default function Home({ searchParams }: ComponentProps) {
                 <CardContent>
                     <OrdersTable orders={orders} />
                     <div className="mt-8">
-                        <Pagination />
+                        <Pagination links={links} />
                     </div>
                 </CardContent>
             </Card>

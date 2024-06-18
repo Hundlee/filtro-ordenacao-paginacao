@@ -16,6 +16,7 @@ interface PaginationProps {
         url: string;
         label: string;
         active: boolean;
+        id: number;
     }[];
 }
 
@@ -50,8 +51,19 @@ export default function Pagination({ links }: PaginationProps) {
                         return null;
                     }
 
+                    if (link.label === "...") {
+                        return (
+                            <PaginationItem
+                                key={link.id}
+                                className="hidden md:inline-flex"
+                            >
+                                <PaginationEllipsis></PaginationEllipsis>
+                            </PaginationItem>
+                        );
+                    }
+
                     return (
-                        <PaginationItem key={link.url}>
+                        <PaginationItem key={link.id}>
                             <PaginationLink
                                 onClick={() =>
                                     handleClickPage(Number(link.label))
